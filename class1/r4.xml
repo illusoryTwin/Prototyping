@@ -1,0 +1,38 @@
+<mujoco model="example">
+
+
+  <worldbody>
+    <geom type="plane" size="10 10 0.1" pos="0 0 -5" rgba="0.9 0 0 1" />
+    <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
+
+
+    <body name="torso" pos="0 0 0">
+        <geom type="box" size="0.04 0.03 0.04" pos="0 0 0.02" rgba="0.2 0.2 0.2 1"/>
+        <geom type="box" size="0.06 0.03 0.04" pos="0 0 -0.02" rgba="0.2 0.2 0.2 1"/>
+        <body name="motor1">
+            <joint name="shoulder1" axis="1 -1 0" pos="-.2 -.2 -.2"/>
+            <geom type="cylinder" size="0.01 0.01" pos="-0.02 -0.03 0" euler="0 90 0" rgba="0 .9 0 1"/>
+            
+            <body name="motor2">
+                <joint name="shoulder2" axis="1 -1 0" pos="-.3 -.3 -.3"/>
+                <geom type="cylinder" size="0.01 0.01" pos="-0.03 -0.03 0"euler="90 0 0" rgba="0 .9 0 1"/>
+                <>
+            </body>
+        </body>
+    </body>
+
+  </worldbody>
+
+  <!-- <tendon>
+    <spatial limited="true" range="0 0.6" width="0.005">
+      <site site="end1"/>
+      <site site="end2"/>
+    </spatial>
+  </tendon> -->
+    <contact>
+        <!-- <exclude body1="motor1" body2="motor2"/> -->
+        <exclude body1="torso" body2="motor1"/>
+
+    </contact>
+
+</mujoco>
