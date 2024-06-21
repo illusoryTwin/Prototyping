@@ -1,2 +1,2 @@
 # Prototyping
-Prototyping course, Innopolis University 202
+Prototyping course, Innopolis University 2024
