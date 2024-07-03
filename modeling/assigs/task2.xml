@@ -1,50 +1,40 @@
 <mujoco>
-    <compiler angle="degree" />
-    <option timestep="0.01" />
-
-    <actuator>
-        <motor joint="left_joint" ctrlrange="-10000 10000" ctrllimited="true" />
-        <motor joint="right_joint" ctrlrange="-10000 10000" ctrllimited="true" />
-    </actuator>
-
     <worldbody>
-        <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1" />
-        <geom name="ground" type="plane" pos="0 0 0" size="10 10 0.1" rgba="1 0.0 0.0 1" />
-        <body name="cylinder_body" pos="0 0 0.15">
-<!--            <joint name="left_joint" pos="0 0 0" axis="0 1 0" />-->
-            <joint name="left_joint" pos="0 0 0" axis="0 1 0"></joint>
+        <light diffuse="0.7 0.7 0.7" pos="0 0 1"/>
+        <geom name="ground" type="plane" size="10 10 0.1" rgba="1 0 0 1"/>
+        <body pos="0 0 0">
+            <joint name="left_joint1" pos="0 0 0.0198" axis="0 1 0"/>
+            <geom type="cylinder" euler="90 0 0" pos="0 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1"  mass="0.065"/>
+            <geom type="box" size="0.01 0.01 0.05" pos="0 0 0.0698" mass="0.02"/>
+            <body pos="0 0 0.1198">
+                <joint name="left_joint2" pos="0 0 0.0198" axis="0 1 0"/>
+                <geom type="cylinder" euler="90 0 0" pos="0 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1" mass="0.065"/>
+                <body name="link">
+                    <geom type="box" euler="0 90 0" size="0.01 0.01 0.05" pos="0.05 0 0.0198" mass="0.02"/>
+                </body>
+            </body>
+        </body>
 
-            <geom name="cylinder" type="cylinder" pos="0 0 0" size="0.15 0.1" rgba="0.1 0.1 0.1 1" euler="90 0 0"/>
-            <geom type="box" size="0.08 0.08 1.0" pos="0.5 0 0.866" rgba="0 0.9 0.4 1" euler="0 30 0"/>
-            <body pos="0.5 0 0.866">
-                <joint name="left_joint1" pos="0.5 0 0.866" axis="0 1 0" />
-                <geom type="cylinder" size="0.15 0.1" pos="0.5 0 0.866" rgba="0.9 0.1 0.1 1" euler="90 0 0"/>
-                <body name="body">
-                    <geom type="box" pos="1 0 1.7" size="0.08 0.08 1.0" rgba="0 0.9 0.4 1" euler="0 30 0"/>
-                </body>
-            </body>
-<!--            </body>-->
-        </body>
-        <body name="cylinder_body2" pos="4 0 0.15">
-            <geom type="cylinder" pos="0 0 0" size="0.15 0.1" rgba="0.1 0.1 0.1 1" euler="90 0 0"/>
-            <joint name="right_joint" pos="0 0 0" axis="0 1 0" />
-            <geom type="box" size="0.08 0.08 1.0" pos="-0.5 0 0.866" rgba="0 0.9 0.4 1" euler="0 -30 0"/>
-            <body name="1" pos="-0.5 0 0.866">
-                <joint name="right_joint1" pos="-0.5 0 0.866" axis="0 1 0"></joint>
-                <geom type="cylinder" pos="-0.5 0 0.866" size="0.15 0.1" rgba="0.9 0.1 0.1 1" euler="90 0 0"/>
-                <body name="2" pos="-0.5 0 0.866">
-                    <geom type="box" pos="-0.5 0 0.866" size="0.08 0.08 1.0" rgba="0 0.9 0.4 1" euler="0 -30 0"/>
-                    <body name="ee" pos="-1 0 1.7">
-                        <geom type="cylinder" pos="0 0 0" size="0.15 0.1" rgba="0.1 0.1 0.1 1" euler="90 0 0"/>
-                    </body>
-                </body>
+        <body pos="0.2 0 0">
+            <joint name="right_joint1" pos="0 0 0.0198" axis="0 1 0"/>
+            <geom type="cylinder" euler="90 0 0" pos="0 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1" mass="0.065"/>
+            <geom type="box" size="0.01 0.01 0.05" pos="0 0 0.0698" mass="0.02"/>
+            <body name="link2" pos="0 0 0.1198">
+                <joint name="right_joint2" pos="0 0 0.0198" axis="0 1 0"/>
+                <geom type="cylinder" euler="90 0 0" pos="0 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1" mass="0.065"/>
+                <geom type="box" euler="0 90 0" size="0.01 0.01 0.05" pos="-0.05 0 0.0198" mass="0.02"/>
+<!--                <geom type="cylinder" euler="90 0 0" pos="-0.1198 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1"/>-->
+
+               <body name="ee" pos="0 0 0">
+<!--&lt;!&ndash;                    <joint pos="-0.1198 0 0.0198" axis="0 1 0"/>&ndash;&gt;-->
+                   <geom type="cylinder" euler="90 0 0" pos="-0.1 0 0.0198" size="0.0198 0.0115" rgba="0.1 0.1 0.1 1"/>
+               </body>
             </body>
         </body>
+
     </worldbody>
     <equality>
-        <connect body1="ee" body2="body" anchor="2 0 1.7"/>
-        <connect body1="1" body2="2" anchor="-0.5 0 0.866"/>
-        <connect body1="cylinder_body" body2="body" anchor="1 0 1.7"/>
-<!--        <connect name="kinematic_link" active="true" body1="ee" body2="body" anchor="1.5 0 1.7" />-->
+        <connect name="kinematic_link" active="true" body1="link2" body2="link" anchor="-0.1 0 0.0198"/>
     </equality>
+
 </mujoco>
