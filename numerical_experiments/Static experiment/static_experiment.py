@@ -16,11 +16,11 @@ measurements_list = []
 # Run the simulation and collect data
 with mujoco.viewer.launch_passive(model, data) as viewer:
     start = time.time()
-    while viewer.is_running() and time.time() - start < 10:
+    while viewer.is_running() and time.time() - start < 40:
         step_start = time.time()
-        for q1 in range(0, 360, 5):
-            for q2 in range(0, 360, 5):
-                for q3 in range(0, 360, 5):
+        for q1 in range(0, 360, 10):
+            for q2 in range(0, 360, 10):
+                for q3 in range(0, 360, 10):
                     data.qpos = [np.deg2rad(q1), np.deg2rad(q2), np.deg2rad(q3)]
                     mujoco.mj_step(model, data)
                     mujoco.mj_inverse(model, data)
