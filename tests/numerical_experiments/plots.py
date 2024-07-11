@@ -21,7 +21,6 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Load data from CSV file
-# csv_filename = 'qfrc_inverse_data.csv'
 df = pd.read_csv('angles_and_torques6.csv')
 
 # Plotting

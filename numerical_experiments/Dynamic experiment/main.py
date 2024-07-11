@@ -289,3 +289,11 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
             time_until_next_step = model.opt.timestep - (time.time() - step_start)
             if time_until_next_step > 0:
                 time.sleep(time_until_next_step)
+
+
+J = np.zeros(3, model.nv)
+jacr = np.zeros(3, model.nv)
+J_prev = J.copy()
+mj_jac(model, data, J, jacr, pos, body_id) # - position to which we are aiming
+
+

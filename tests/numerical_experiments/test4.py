@@ -24,7 +24,6 @@
 #     return i0, i1, i2, i3
 #
 #
-# csv_filename = 'qfrc_inverse_data.csv'
 # with open(csv_filename, mode='w', newline='') as csv_file:
 #     csv_writer = csv.writer(csv_file)
 #
