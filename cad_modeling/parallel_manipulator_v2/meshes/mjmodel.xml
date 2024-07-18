@@ -1,0 +1,68 @@
+<mujoco model="parallel_manipulator_v2">
+  <compiler angle="radian"/>
+  <asset>
+    <mesh name="base_link" file="base_link.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link21" file="link21.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link11" file="link11.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link51" file="link51.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link41" file="link41.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link61" file="link61.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="ring1" file="ring1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="link31" file="link31.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <worldbody>
+    <geom type="mesh" mesh="base_link"/>
+    <geom type="mesh" mesh="link61"/>
+    <body name="link21" pos="-0.057865 0.100227 0">
+
+<!--    <body name="link21" pos="-0.057865 0.100227 0">-->
+      <inertial pos="-0.0332425 -0.0758002 0" quat="0.560502 0.431089 -0.560502 0.431089" mass="0.45548" diaginertia="0.0013062 0.00124399 9.26802e-05"/>
+      <joint name="Revolute_3" pos="0 0 0" axis="0.5 -0.866025 0" limited="false"/>
+      <geom pos="0.057865 -0.100227 0" type="mesh" mesh="link21"/>
+    </body>
+    <body name="link51" pos="2e-06 0 -0.17">
+
+<!--    <body name="link51" pos="2e-06 0 -0.17">-->
+      <inertial pos="0.0821572 -4.36559e-07 0.0695224" quat="0.669409 0.227797 0.227797 0.669409" mass="1.01501" diaginertia="0.00476656 0.00452455 0.000354263"/>
+      <joint name="Revolute_8" pos="0 0 0" axis="0 0 -1" limited="false"/>
+      <geom pos="-2e-06 0 0.17" type="mesh" mesh="link51"/>
+        <body name="link11" pos="0.115732 0 0.17">
+
+<!--      <body name="link11" pos="0.115732 0 0.17">-->
+        <inertial pos="-0.0490241 0.0666887 0" quat="0.269865 0.653585 -0.269865 0.653585" mass="0.45548" diaginertia="0.0013062 0.00124399 9.26802e-05"/>
+        <joint name="Revolute_4" pos="0 0 0" axis="-1 0 0" limited="false"/>
+        <geom pos="-0.115734 0 0" type="mesh" mesh="link11"/>
+        <body name="ring1" pos="-0.115734 0.1 0">
+          <inertial pos="2.52047e-07 -0.1 0" quat="0.5 0.5 -0.5 0.5" mass="1.34958" diaginertia="0.0100169 0.00505355 0.00505355"/>
+          <joint name="Revolute_12" pos="0 0 0" axis="0 1 0" limited="false"/>
+          <geom pos="0 -0.1 0" type="mesh" mesh="ring1"/>
+<!--          <body name="link31" pos="0.086603 -0.15 0">-->
+          <body name="link31" pos="0.086603 -0.15 0">
+
+            <inertial pos="-0.062203 -0.0411173 0" quat="-0.0930828 0.700953 0.0930828 0.700953" mass="0.45548" diaginertia="0.0013062 0.00124399 9.26802e-05"/>
+            <joint name="Revolute_13" pos="0 0 0" axis="-0.866025 0.5 0" limited="false"/>
+            <geom pos="-0.086603 0.05 0" type="mesh" mesh="link31"/>
+          </body>
+        </body>
+      </body>
+      <body name="link41" pos="0 0 0.02">
+        <inertial pos="-0.0401744 -0.0695839 0.0600855" quat="0.901024 0.348094 -0.0932714 -0.241429" mass="0.950891" diaginertia="0.00387306 0.00366571 0.000312379"/>
+        <joint name="Revolute_9" pos="0 0 0" axis="0 0 -1" limited="false"/>
+        <geom pos="-2e-06 0 0.15" type="mesh" mesh="link41"/>
+      </body>
+    </body>
+  </worldbody>
+<!--  The best for now-->
+<!--  <equality>-->
+<!--    &lt;!&ndash; <connect name="kinematic_link1" active="true" body1="upper_link11" body2="ring1" anchor="0 0 0" /> &ndash;&gt;-->
+<!--    <connect name="kinematic_link2" active="true" body1="link21" body2="ring1" anchor="0 0 0" />-->
+<!--    <connect name="kinematic_link3" active="true" body1="link11" body2="ring1" anchor="0 0 0" />-->
+<!--  </equality>-->
+  <equality>
+    <!-- <connect name="kinematic_link1" active="true" body1="upper_link11" body2="ring1" anchor="0 0 0" /> -->
+    <connect name="kinematic_link2" active="true" body1="link21" body2="ring1" anchor="0 0 0" />
+    <connect name="kinematic_link3" active="true" body1="link11" body2="ring1" anchor="0 0 0" />
+    <connect name="kinematic_link1" active="true" body1="link41" body2="link31" anchor="0 0 0" />
+
+  </equality>
+</mujoco>
