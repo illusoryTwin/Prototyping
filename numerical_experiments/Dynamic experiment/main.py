@@ -4,19 +4,27 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import mujoco
 import time
+# from mujoco import minimize
 import mujoco.viewer
-
+from scipy.optimize import minimize
 
 model = mujoco.MjModel.from_xml_path('model.xml')
 data = mujoco.MjData(model)
 
 # Define the trajectory points
 trajectory_points = [
-    # [0, 0, 0.04],
-    # [0, 0, 0],
-    [0, 0, 0.02],
-    [0, 0.04, 0.02]
+    [0, -0.07, 0],
+    [0, 0.07, 0],
+    [0, 0, 0.07],
+    [0, 0, -0.07]
 ]
+# trajectory_points = [
+#     [0, 0, -0.07],
+#     [0, 0, 0],
+#     [0, 0, 0.07],
+#     [0, 0.07, 0.07]
+# ]
+
 
 # Function to generate trajectory coefficients for each segment
 def generate_trajectory_coefficients(X_start, X_end, T):
@@ -62,32 +70,52 @@ end_time = 10
 
 
 # IK residual function
-def ik_residual(q, pos, model, data, q_prev, body_id):
-    data.qpos = q
-    data.qvel = np.zeros(q.shape)
-    data.qacc = np.zeros(q.shape)
-    mujoco.mj_kinematics(model, data)
-    res_pos = data.body(body_id).xpos - pos
-    l1 = 0.00001
-    q_dif = (q - q_prev) / 0.001
-    l2 = 10
-    return np.hstack([res_pos, l1 * q.T @ q, l2 * q_dif])
-    # return res_pos
+# def ik_residual(x, pos):
+#     """Residual for inverse kinematics.
+#
+#     Args:
+#     x: joint angles.
+#     pos: target position for the end effector.
+#
+#     Returns:
+#     The residual of the Inverse Kinematics task.
+#     """
+#
+#     # Set qpos, compute forward kinematics.
+#     data.qpos = x
+#     data.qvel = np.zeros(x.shape)
+#     data.qacc = np.zeros(x.shape)
+#
+#     mujoco.mj_kinematics(model, data)
+#
+#     # Position residual.
+#     res_pos = data.body(body_id).xpos - pos
+#
+#     return res_pos
+
+# Inverse kinematics residual function
+def residual(q, x_desired):
+    data.qpos[:] = q
+    mujoco.mj_fwdPosition(model, data)
+    x_current = data.site_xpos[body_id]
+    return np.linalg.norm(x_current - x_desired)
 
 
 # Initialize variables for simulation
-body_id = 'end_effector'
+body_id = mujoco.mj_name2id(model,  mujoco.mjtObj.mjOBJ_SITE, 'end_effector')
 v_max = 0.4
-time_range = np.arange(0, end_time, dt)
-q_prev = np.zeros(model.nq)
+# time_range = np.arange(0, end_time, dt)
+# q_prev = np.zeros(model.nq)
 q_t = []
-
+dq_t = []
+# # data.qpos = np.deg2rad([15, 15, 15, 15])
 # Calculate the trajectory for each segment
 for i in range(len(trajectory_points) - 1):
     X_start = np.array(trajectory_points[i])
     X_end = np.array(trajectory_points[i + 1])
     T = (15 / 8) * (np.linalg.norm(X_end - X_start) / v_max)
     coeffs = generate_trajectory_coefficients(X_start, X_end, T)
+    print(coeffs)
 
     segment_time_range = np.arange(0, T, dt)
     for t in segment_time_range:
@@ -99,39 +127,85 @@ for i in range(len(trajectory_points) - 1):
         dot_x = calculate_dot_x(X_start, X_end, dot_s)
         ddot_x = calculate_ddot_x(X_start, X_end, ddot_s)
 
-        q = data.qpos.copy()
-        opt = ik_residual(q, x_t, model, data, q_prev, body_id)
-        print("opt", opt)
-        #
-        # q_opt = opt[:4]
-        # q_new = q+q_opt
-        # data.qpos = q_new
-        # q_t.append(q_new)
-        # q_prev = q
+        target_pos = x_t
+        # Solve inverse kinematics to find joint angles
+        q0 = data.qpos.copy()  # Initial guess for the optimization
+        res = minimize(residual, q0, args=(x_t,), bounds=[(-np.pi, np.pi)] * model.nq)
+        q_val = res.x
+        q_t.append(q_val)
 
-        # J = np.zeros(4, model.nv)
-        # jacr = np.zeros(4, model.nv)
-        # J_prev = J.copy()
+        # Compute Jacobian and its derivative
+        mujoco.mj_fwdPosition(model, data)
+        J = np.zeros((3, model.nv))
+        mujoco.mj_jacSite(model, data, J, None, body_id)
+        J_pinv = np.linalg.pinv(J)
+
+        dq_val = J_pinv @ dot_x
+        dq_t.append(dq_val)
+
+        # # J = np.zeros((4, model.nv))
+        # jacr = np.zeros((3, model.nv))
+        # jacp = np.zeros((3, model.nv))
+        #
+        # # J_prev = J.copy()
         # J = mujoco.mj_jac(model, data, J, jacr, X_end, body_id)  # - position to which we are aiming
         # J_pinv = np.linalg.pinv(J)
         #
         # dq_t = J_pinv @ dot_x
-        # dJ_dt = (J - J_prev) / dt if t > 0 else np.zeros_like(J)
-        #
-        # ddot_x = ddot_x.reshape((3, 1))
+
+
+        data.qpos[:] = q_val
+        data.qvel[:] = dq_val
+
+
+#         if t != 0:
+#             q0 = data.qpos.copy()
+#         else:
+#             q0 = np.deg2rad([15, 15, 15, 15])
+# # #
+#         print("q0", q0)
+#         # opt = ik_residual(q0, target_pos, q_prev)
+#         # print("opt", opt)
+#         ik_target = lambda x : ik_residual(q0, target_pos)
 #
-# print("q_t", q_t)
-#
-# with mujoco.viewer.launch_passive(model, data) as viewer:
-#     start = time.time()
-#     while viewer.is_running() and time.time() - start < end_time:
-#         step_start = time.time()
-#         for i, q_val in enumerate(q_t):
-#             data.qpos = q_val
-#             data.qvel = [1, 1, 1, 1]
-#             # data.qacc = 0
-#             mujoco.mj_step(model, data)
-#             viewer.sync()
-#             time_until_next_step = model.opt.timestep - (time.time() - step_start)
-#             if time_until_next_step > 0:
-#                 time.sleep(time_until_next_step)
+#         # ik_target = lambda x : ik_residual(q0, target_pos, q_prev)
+#         q, res = minimize.least_squares(q0, ik_target)
+#         print("q", q)
+#         q_t.append(q)
+#         data.qpos = q
+#         mujoco.mj_step(model, data)
+
+# #
+#         ik_target = lambda x: ik_residual(x, pos=x_t, q_prev=q0)
+# #         print("q, res", q, res)
+# #         q_prev = q
+# #         # q_opt = opt[:4]
+# #         # q_new = q+q_opt
+# #         # data.qpos = q_new
+# #         # q_t.append(q_new)
+# #         # q_prev = q
+# #
+# #
+# #         # dJ_dt = (J - J_prev) / dt if t > 0 else np.zeros_like(J)
+# #         #
+# #         # ddot_x = ddot_x.reshape((3, 1))
+# # #
+print("q_t", q_t)
+
+
+with mujoco.viewer.launch_passive(model, data) as viewer:
+    start = time.time()
+    data.qpos = np.deg2rad([15, 15, 15, 15])
+
+    while viewer.is_running() and time.time() - start < end_time:
+        step_start = time.time()
+        for i in range(len(q_t)):
+        # for i, q_val in enumerate(q_t):
+            data.qpos = q_t[i]
+            data.qvel = dq_t[i]
+            # data.qacc = 0
+            mujoco.mj_step(model, data)
+            viewer.sync()
+            time_until_next_step = model.opt.timestep - (time.time() - step_start)
+            if time_until_next_step > 0:
+                time.sleep(time_until_next_step)
