@@ -11,21 +11,10 @@ end_time = 5
 v_max = 0.4
 dt = 0.05
 
-# trajectory_points = [[0.01, 0.01, 0.01],
-#                      [0.05, 0.01, 0.01],
-#                      [0.03, 0.01, -0.01],
-#                      [0.03, 0.01, 0.03]]
-
-# trajectory_points = [[0.04, 0.02, 0.06],
-#                      [0.04, 0.02, 0.02],
-#                      [0.04, 0.00, 0.04],
-#                      [0.04, 0.04, 0.04]]
-
 trajectory_points = [[0.6, 0.2, 0.2],
                      [0.6, 0.2, -0.2],
                      [0.6, 0.0, 0.0],
                      [0.6, 0.4, 0.0]]
-# print("len(data.qpos)", len(data.qpos))
 
 body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, 'end_effector')
 
@@ -81,6 +70,7 @@ def ik_residual(x, target_pos):
 
 q_t = []
 dq_t = []
+ddq_t = []
 # Calculate the trajectory for each segment
 for i in range(len(trajectory_points) - 1):
     X_start = np.array(trajectory_points[i])
@@ -88,8 +78,6 @@ for i in range(len(trajectory_points) - 1):
     T = (15 / 8) * (np.linalg.norm(X_end - X_start) / v_max)
     coeffs = generate_trajectory_coefficients(X_start, X_end, T)
     segment_time_range = np.arange(0, T, dt)
-    # data.qpos[:] = np.deg2rad([15, 15, 15, 15])
-    # print("new interation")
     data.qpos[:] = np.deg2rad([5, 5, 5, 5])
     mujoco.mj_step(model, data)
     print("data.body(body_id).xpos", data.body(body_id).xpos)
@@ -102,45 +90,32 @@ for i in range(len(trajectory_points) - 1):
         dot_x = calculate_dot_x(X_start, X_end, dot_s)
         ddot_x = calculate_ddot_x(X_start, X_end, ddot_s)
         desired_pos = x_t
-        # print("ik_residual(desired_pos)", ik_residual(desired_pos), "data.body(body_id).xpos", data.body(body_id).xpos,
-        #       "desired_pos", desired_pos)
+
         q0 = data.qpos.copy()
         ik_target = lambda x: ik_residual(x, desired_pos)
         print(type(ik_target))
         q, _ = minimize.least_squares(q0, ik_target)
         q_t.append(q)
 
-        # V1.0
-        # mujoco.mj_step(model, data)
-        # J = np.zeros((3, model.nv))
-        # mujoco.mj_jacSite(model, data, J, None, body_id)
-        # print("jac", J)
-
-        #V3.0
+        # Velocity
         J_v = np.zeros((3, model.nv), dtype=np.float64)
         J_w = np.zeros((3, model.nv), dtype=np.float64)
         mujoco.mj_jacSite(model, data, J_v, J_w, body_id)
         J_v, J_w = J_v[:, :4], J_w[:, :4]
         J = np.vstack((J_v, J_w))
-        dq = np.linalg.pinv(J_v) @ dot_x
+        J_inv = np.linalg.pinv(J_v)
+        dq = J_inv @ dot_x
         print("dq", dq)
         dq_t.append(dq)
 
-
-        #V2.0
-        # mujoco.mj_step(model, data)
-        # jacp = np.zeros((3, model.nv))
-        # jacr = np.zeros((3, model.nv))
-        # mujoco.mj_step(model, data)
-        # mujoco.mj_jacSite(model, data, jacp, jacr, body_id)
-        # jac = np.concatenate((jacp[:, :4],
-        #                       jacr[:, :4]), axis=0)
-        # print("jac", jac)
-        # print("np.linalg.pinv(jac)", np.linalg.pinv(jac))
-
-        # dq = np.linalg.pinv(jac) @ dot_x
-        # dq = np.linalg.pinv(J) @ dot_x
-        # dq_t.append(dq)
+        # Acceleration
+        dJ_dt = (J_v - J_prev) / dt if t > 0 else np.zeros_like(J)
+        if t != 0:
+            ddq = J_inv @ (ddot_x - dJ_dt @ dq)
+        else:
+            ddq = [0., 0., 0., 0.]
+        ddq_t.append(ddq)
+        J_prev = J_v.copy()
 
 
 with mujoco.viewer.launch_passive(model, data) as viewer:
@@ -150,9 +125,8 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         data.qpos[:] = np.deg2rad([5, 5, 5, 5])
         for i in range(len(q_t)):
             data.qpos[:] = q_t[i]
-            # data.qvel[:] = [0.1, 0.1, 0.1, 0.1]
             data.qvel[:] = dq_t[i]
-            # data.qacc[:] = [1000, 1000, 1000, 1000]
+            data.qacc[:] = ddq_t[i]
             mujoco.mj_step(model, data)
             viewer.sync()
             time_until_next_step = model.opt.timestep - (time.time() - step_start)
