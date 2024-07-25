@@ -9,7 +9,8 @@ data = mujoco.MjData(model)
 end_time = 5
 
 v_max = 0.4
-dt = 0.05
+dt = 0.0001
+# dt = 0.01
 
 trajectory_points = [[0.6, 0.2, 0.2],
                      [0.6, 0.2, -0.2],
@@ -76,11 +77,13 @@ for i in range(len(trajectory_points) - 1):
     X_start = np.array(trajectory_points[i])
     X_end = np.array(trajectory_points[i + 1])
     T = (15 / 8) * (np.linalg.norm(X_end - X_start) / v_max)
+    print("T", T)
     coeffs = generate_trajectory_coefficients(X_start, X_end, T)
     segment_time_range = np.arange(0, T, dt)
+    print("len(segment_time_range)", len(segment_time_range))
     data.qpos[:] = np.deg2rad([5, 5, 5, 5])
     mujoco.mj_step(model, data)
-    print("data.body(body_id).xpos", data.body(body_id).xpos)
+    # print("data.body(body_id).xpos", data.body(body_id).xpos)
     for t in segment_time_range:
         s_t = generate_s_t(t, coeffs)
         dot_s = generate_s_dot(t, coeffs)
@@ -96,8 +99,11 @@ for i in range(len(trajectory_points) - 1):
         print(type(ik_target))
         q, _ = minimize.least_squares(q0, ik_target)
         q_t.append(q)
+        # q_t.append(q.tolist())
+
 
         # Velocity
+        mujoco.mj_step(model, data)
         J_v = np.zeros((3, model.nv), dtype=np.float64)
         J_w = np.zeros((3, model.nv), dtype=np.float64)
         mujoco.mj_jacSite(model, data, J_v, J_w, body_id)
@@ -107,22 +113,37 @@ for i in range(len(trajectory_points) - 1):
         dq = J_inv @ dot_x
         print("dq", dq)
         dq_t.append(dq)
+        # dq_t.append(dq.tolist())
+
 
         # Acceleration
+        # mujoco.mj_step(model, data)
         dJ_dt = (J_v - J_prev) / dt if t > 0 else np.zeros_like(J)
         if t != 0:
             ddq = J_inv @ (ddot_x - dJ_dt @ dq)
         else:
-            ddq = [0., 0., 0., 0.]
+            ddq = [float(0)]*4
         ddq_t.append(ddq)
+        # ddq_t.append(ddq.tolist())
+
         J_prev = J_v.copy()
 
+with open('trajectory_data.txt', 'w') as f:
+    for q, dq in zip(q_t, dq_t):
+        f.write(f"{q[0]},{q[1]},{q[2]},{q[3]}, {dq[0]}, {dq[1]}, {dq[2]}, {dq[3]}, {ddq[0]}, {ddq[1]}, {ddq[2]}, {ddq[3]}\n")
+    # for q, dq, ddq in zip(q_t, dq_t, ddq_t):
+    #     f.write(f"{q}, {dq}, {ddq}\n")
 
+
+# T = 1.875
+print("len(q_t)", len(q_t))
 with mujoco.viewer.launch_passive(model, data) as viewer:
     start = time.time()
     while viewer.is_running() and time.time() - start < end_time:
         step_start = time.time()
         data.qpos[:] = np.deg2rad([5, 5, 5, 5])
+        time_ = 0
+        # while time_ <= T:
         for i in range(len(q_t)):
             data.qpos[:] = q_t[i]
             data.qvel[:] = dq_t[i]
@@ -132,3 +153,5 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
             time_until_next_step = model.opt.timestep - (time.time() - step_start)
             if time_until_next_step > 0:
                 time.sleep(time_until_next_step)
+
+            # time_ += dt

@@ -1,0 +1,127 @@
+<mujoco model="itp2">
+  <compiler angle="radian" meshdir="meshes/"/>
+  <asset>
+    <mesh name="base_link" file="base_link.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_down1" file="l_link_down1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_down2" file="l_link_down2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_down3" file="l_link_down3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_down4" file="l_link_down4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="v_link4" file="v_link4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="v_link1" file="v_link1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="v_link2" file="v_link2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="v_link3" file="v_link3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_up3" file="l_link_up3.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_up4" file="l_link_up4.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_up1" file="l_link_up1.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="l_link_up2" file="l_link_up2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="ring1" file="ring1.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <worldbody>
+    <body name="base_link">
+      <inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="0.312691" diaginertia="0.00110446 0.000562756 0.000562756"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="base_link"/>
+      <geom type="mesh" mesh="base_link"/>
+      <body name="l_link_down1" pos="0.060355 0 0">
+        <inertial pos="-0.0207331 -0.0280169 0.0280169" quat="-1.41001e-07 0.707107 0.5 0.5" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+        <joint name="Revolute_33" pos="0 0 0" axis="-1 0 0"/>
+        <geom pos="-0.060355 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_down1"/>
+        <geom pos="-0.060355 0 0" type="mesh" mesh="l_link_down1"/>
+        <body name="v_link4" pos="-0.060355 0 0.065755">
+          <inertial pos="0 -0.0491587 -0.010755" quat="0.707107 0 0 0.707107" mass="0.02882" diaginertia="2.8657e-06 2.33879e-06 1.49746e-06"/>
+          <joint name="Revolute_40" pos="0 0 0" axis="0 0.707107 -0.707107"/>
+          <geom pos="0 0 -0.065755" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="v_link4"/>
+          <geom pos="0 0 -0.065755" type="mesh" mesh="v_link4"/>
+          <body name="l_link_up1" pos="0 -0.046779 -0.002534">
+            <inertial pos="0.0396219 0.0187621 0.0187621" quat="-0.5 0.5 1.41001e-07 0.707107" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+            <joint name="Revolute_46" pos="0 0 0" axis="0 -0.707107 -0.707107"/>
+            <geom pos="0 0.046779 -0.063221" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_up1"/>
+            <geom pos="0 0.046779 -0.063221" type="mesh" mesh="l_link_up1"/>
+          </body>
+        </body>
+      </body>
+      <body name="l_link_down2" pos="0 0.060355 0">
+        <inertial pos="0.0280169 -0.0207331 0.0280169" quat="0.853553 0.353553 0.353553 -0.146447" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+        <joint name="Revolute_38" pos="0 0 0" axis="0 -1 0"/>
+        <geom pos="0 -0.060355 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_down2"/>
+        <geom pos="0 -0.060355 0" type="mesh" mesh="l_link_down2"/>
+        <body name="v_link1" pos="0 -0.060355 0.065755">
+          <inertial pos="0.0491587 0 -0.010755" mass="0.02882" diaginertia="2.8657e-06 2.33879e-06 1.49746e-06"/>
+          <joint name="Revolute_41" pos="0 0 0" axis="-0.707107 0 -0.707107"/>
+          <geom pos="0 0 -0.065755" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="v_link1"/>
+          <geom pos="0 0 -0.065755" type="mesh" mesh="v_link1"/>
+          <body name="l_link_up2" pos="0.046779 0 -0.002534">
+            <inertial pos="-0.0187621 0.0396219 0.0187621" quat="0.353553 0.853553 -0.146447 0.353553" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+            <joint name="Revolute_47" pos="0 0 0" axis="0.707107 0 -0.707107"/>
+            <geom pos="-0.046779 0 -0.063221" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_up2"/>
+            <geom pos="-0.046779 0 -0.063221" type="mesh" mesh="l_link_up2"/>
+            <body name="ring1" pos="0.031003 0.060755 0.124561">
+              <inertial pos="-0.077782 -0.060755 -0.077782" quat="0.5 0.5 -0.5 0.5" mass="0.312691" diaginertia="0.00110446 0.000562756 0.000562756"/>
+              <joint name="Revolute_48" pos="0 0 0" axis="0 -1 0"/>
+              <geom pos="-0.077782 -0.060755 -0.187782" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="ring1"/>
+              <geom pos="-0.077782 -0.060755 -0.187782" type="mesh" mesh="ring1"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="l_link_down3" pos="-0.060355 0 0">
+        <inertial pos="0.0207331 0.0280169 0.0280169" quat="-0.5 0.5 1.41001e-07 0.707107" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+        <joint name="Revolute_35" pos="0 0 0" axis="1 0 0"/>
+        <geom pos="0.060355 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_down3"/>
+        <geom pos="0.060355 0 0" type="mesh" mesh="l_link_down3"/>
+        <body name="v_link2" pos="0.060355 0 0.065755">
+          <inertial pos="0 0.0491587 -0.010755" quat="0.707107 0 0 0.707107" mass="0.02882" diaginertia="2.8657e-06 2.33879e-06 1.49746e-06"/>
+          <joint name="Revolute_42" pos="0 0 0" axis="0 -0.707107 -0.707107"/>
+          <geom pos="0 0 -0.065755" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="v_link2"/>
+          <geom pos="0 0 -0.065755" type="mesh" mesh="v_link2"/>
+          <body name="l_link_up3" pos="0 0.046779 -0.002534">
+            <inertial pos="-0.0396219 -0.0187621 0.0187621" quat="-1.40718e-07 0.707107 0.5 0.5" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+            <joint name="Revolute_44" pos="0 0 0" axis="0 0.707107 -0.707107"/>
+            <geom pos="0 -0.046779 -0.063221" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_up3"/>
+            <geom pos="0 -0.046779 -0.063221" type="mesh" mesh="l_link_up3"/>
+          </body>
+        </body>
+      </body>
+      <body name="l_link_down4" pos="0 -0.060355 0">
+        <inertial pos="-0.0280169 0.0207331 0.0280169" quat="0.353553 0.853553 -0.146447 0.353553" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+        <joint name="Revolute_36" pos="0 0 0" axis="0 1 0"/>
+        <geom pos="0 0.060355 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_down4"/>
+        <geom pos="0 0.060355 0" type="mesh" mesh="l_link_down4"/>
+        <body name="v_link3" pos="0 0.060355 0.065755">
+          <inertial pos="-0.0491587 0 -0.010755" mass="0.02882" diaginertia="2.8657e-06 2.33879e-06 1.49746e-06"/>
+          <joint name="Revolute_43" pos="0 0 0" axis="0.707107 0 -0.707107"/>
+          <geom pos="0 0 -0.065755" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="v_link3"/>
+          <geom pos="0 0 -0.065755" type="mesh" mesh="v_link3"/>
+          <body name="l_link_up4" pos="-0.046779 0 -0.002534">
+            <inertial pos="0.0187621 -0.0396219 0.0187621" quat="0.853553 0.353553 0.353553 -0.146447" mass="0.0964305" diaginertia="0.000102991 9.92561e-05 1.02616e-05"/>
+            <joint name="Revolute_45" pos="0 0 0" axis="-0.707107 0 -0.707107"/>
+            <geom pos="0.046779 0 -0.063221" type="mesh" contype="0" conaffinity="0" group="1" density="0" mesh="l_link_up4"/>
+            <geom pos="0.046779 0 -0.063221" type="mesh" mesh="l_link_up4"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <equality>
+     <connect name="kinematic_link1" active="true" body1="l_link_down2" body2="v_link2" anchor="0 0 0" />
+     <connect name="kinematic_link2" active="true" body1="l_link_down3" body2="v_link3" anchor="0 0 0" />
+     <connect name="kinematic_link3" active="true" body1="l_link_down4" body2="v_link1" anchor="0 0 0" />
+     <connect name="kinematic_link4" active="true" body1="l_link_down1" body2="v_link4" anchor="0 0 0" />
+     <connect name="connection" active="true" body1="base_link" body2="l_link_down1" anchor="0 0 0" />
+
+    <connect name="kinematic_link5" active="true" body1="v_link1" body2="l_link_up1" anchor="0 0 0" />
+    <connect name="kinematic_link6" active="true" body1="v_link2" body2="l_link_up2" anchor="0 0 0" />
+    <connect name="kinematic_link7" active="true" body1="v_link3" body2="l_link_up3" anchor="0 0 0" />
+    <connect name="kinematic_link8" active="true" body1="v_link4" body2="l_link_up4" anchor="0 0 0" />
+    <connect name="kinematic_link90" active="true" body1="ring1" body2="l_link_up1" anchor="0 0 0" />
+    <connect name="kinematic_link10" active="true" body1="ring1" body2="l_link_up2" anchor="0 0 0" />
+    <connect name="kinematic_link11" active="true" body1="ring1" body2="l_link_up3" anchor="0 0 0" />
+    <connect name="kinematic_link12" active="true" body1="ring1" body2="l_link_up4" anchor="0 0 0" />
+
+
+<!--    <connect name="kinematic_link6" active="true" body1="ring1" body2="l_link_down4" anchor="0 0 0" />-->
+
+<!--    <connect name="kinematic_link3" active="true" body1="link11" body2="ring1" anchor="0 0 0" />-->
+<!--    <connect name="kinematic_link1" active="true" body1="link41" body2="link31" anchor="0 0 0" />-->
+
+  </equality>
+</mujoco>
