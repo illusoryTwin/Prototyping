@@ -10,6 +10,7 @@ data = mujoco.MjData(model)
 q_t = []
 dq_t = []
 ddq_t = []
+torques = []
 end_time = 5
 
 
@@ -26,6 +27,7 @@ for line in lines:
     q_t.append(values[:4])
     dq_t.append(values[4:8])
     ddq_t.append(values[8:12])
+    torques.append(values[12:16])
 
 
 # T = 1.875

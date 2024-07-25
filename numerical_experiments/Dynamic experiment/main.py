@@ -72,6 +72,7 @@ def ik_residual(x, target_pos):
 q_t = []
 dq_t = []
 ddq_t = []
+torques_data = []
 # Calculate the trajectory for each segment
 for i in range(len(trajectory_points) - 1):
     X_start = np.array(trajectory_points[i])
@@ -101,7 +102,6 @@ for i in range(len(trajectory_points) - 1):
         q_t.append(q)
         # q_t.append(q.tolist())
 
-
         # Velocity
         mujoco.mj_step(model, data)
         J_v = np.zeros((3, model.nv), dtype=np.float64)
@@ -115,25 +115,40 @@ for i in range(len(trajectory_points) - 1):
         dq_t.append(dq)
         # dq_t.append(dq.tolist())
 
-
         # Acceleration
         # mujoco.mj_step(model, data)
         dJ_dt = (J_v - J_prev) / dt if t > 0 else np.zeros_like(J)
         if t != 0:
             ddq = J_inv @ (ddot_x - dJ_dt @ dq)
         else:
-            ddq = [float(0)]*4
+            ddq = [float(0)] * 4
         ddq_t.append(ddq)
         # ddq_t.append(ddq.tolist())
 
         J_prev = J_v.copy()
 
-with open('trajectory_data.txt', 'w') as f:
-    for q, dq in zip(q_t, dq_t):
-        f.write(f"{q[0]},{q[1]},{q[2]},{q[3]}, {dq[0]}, {dq[1]}, {dq[2]}, {dq[3]}, {ddq[0]}, {ddq[1]}, {ddq[2]}, {ddq[3]}\n")
-    # for q, dq, ddq in zip(q_t, dq_t, ddq_t):
-    #     f.write(f"{q}, {dq}, {ddq}\n")
+        mujoco.mj_step(model, data)
+        mujoco.mj_inverse(model, data)
+        # if data.contact:
+        #     print('contact')
+        #     continue
+        tau = data.qfrc_inverse
+        print("tau", tau)
+        torques_data.append([tau[0], tau[1], tau[2], tau[3]])
 
+print(torques_data)
+
+
+with open('trajectory_data.txt', 'w') as f:
+    for q, dq, tau in zip(q_t, dq_t, torques_data):
+        f.write(
+            f"{q[0]},{q[1]},{q[2]},{q[3]}, {dq[0]}, {dq[1]}, {dq[2]}, {dq[3]}, {ddq[0]}, {ddq[1]}, {ddq[2]}, {ddq[3]}, {tau[0]}, {tau[1]}, {tau[2]}, {tau[3]}\n")
+
+
+with open('trajectory_data.csv', 'w') as f:
+    for q, dq, tau in zip(q_t, dq_t, torques_data):
+        f.write(
+            f"{q[0]},{q[1]},{q[2]},{q[3]}, {dq[0]}, {dq[1]}, {dq[2]}, {dq[3]}, {ddq[0]}, {ddq[1]}, {ddq[2]}, {ddq[3]}, {tau[0]}, {tau[1]}, {tau[2]}, {tau[3]}\n")
 
 # T = 1.875
 print("len(q_t)", len(q_t))
