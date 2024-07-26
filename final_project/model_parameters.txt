@@ -7,12 +7,13 @@ Body 4: Mass = 0.0964305
 Body 5: Mass = 0.0964305
 Body 6: Mass = 0.02882
 Body 7: Mass = 0.0964305
-Body 8: Mass = 0.0964305
-Body 9: Mass = 0.02882
-Body 10: Mass = 0.0964305
+Body 8: Mass = 0.312691
+Body 9: Mass = 0.0964305
+Body 10: Mass = 0.02882
 Body 11: Mass = 0.0964305
-Body 12: Mass = 0.02882
-Body 13: Mass = 0.0964305
+Body 12: Mass = 0.0964305
+Body 13: Mass = 0.02882
+Body 14: Mass = 0.0964305
 
 Body Inertia Matrices:
 Body 0: Inertia Matrix = [0. 0. 0.]
@@ -23,12 +24,13 @@ Body 4: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
 Body 5: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
 Body 6: Inertia Matrix = [2.86570e-06 2.33879e-06 1.49746e-06]
 Body 7: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
-Body 8: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
-Body 9: Inertia Matrix = [2.86570e-06 2.33879e-06 1.49746e-06]
-Body 10: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
+Body 8: Inertia Matrix = [0.00110446 0.00056276 0.00056276]
+Body 9: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
+Body 10: Inertia Matrix = [2.86570e-06 2.33879e-06 1.49746e-06]
 Body 11: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
-Body 12: Inertia Matrix = [2.86570e-06 2.33879e-06 1.49746e-06]
-Body 13: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
+Body 12: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
+Body 13: Inertia Matrix = [2.86570e-06 2.33879e-06 1.49746e-06]
+Body 14: Inertia Matrix = [1.02991e-04 9.92561e-05 1.02616e-05]
 
 Body Center of Mass Positions:
 Body 0: Center of Mass Position = [0. 0. 0.]
@@ -39,12 +41,13 @@ Body 4: Center of Mass Position = [ 0.       -0.046779 -0.002534]
 Body 5: Center of Mass Position = [0.       0.060355 0.      ]
 Body 6: Center of Mass Position = [ 0.       -0.060355  0.065755]
 Body 7: Center of Mass Position = [ 0.046779  0.       -0.002534]
-Body 8: Center of Mass Position = [-0.060355  0.        0.      ]
-Body 9: Center of Mass Position = [0.060355 0.       0.065755]
-Body 10: Center of Mass Position = [ 0.        0.046779 -0.002534]
-Body 11: Center of Mass Position = [ 0.       -0.060355  0.      ]
-Body 12: Center of Mass Position = [0.       0.060355 0.065755]
-Body 13: Center of Mass Position = [-0.046779  0.       -0.002534]
+Body 8: Center of Mass Position = [0.031003 0.060755 0.124561]
+Body 9: Center of Mass Position = [-0.060355  0.        0.      ]
+Body 10: Center of Mass Position = [0.060355 0.       0.065755]
+Body 11: Center of Mass Position = [ 0.        0.046779 -0.002534]
+Body 12: Center of Mass Position = [ 0.       -0.060355  0.      ]
+Body 13: Center of Mass Position = [0.       0.060355 0.065755]
+Body 14: Center of Mass Position = [-0.046779  0.       -0.002534]
 
 Geom Friction Coefficients:
 Geom 0: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
@@ -73,3 +76,5 @@ Geom 22: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
 Geom 23: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
 Geom 24: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
 Geom 25: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
+Geom 26: Friction Coefficients = [1.e+00 5.e-03 1.e-04]
+Geom 27: Friction Coefficients = [1.e+00 5.e-03 1.e-04]

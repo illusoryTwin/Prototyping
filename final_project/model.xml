@@ -108,15 +108,15 @@
      <connect name="kinematic_link4" active="true" body1="l_link_down1" body2="v_link4" anchor="0 0 0" />
      <connect name="connection" active="true" body1="base_link" body2="l_link_down1" anchor="0 0 0" />
 
-    <connect name="kinematic_link5" active="true" body1="v_link1" body2="l_link_up1" anchor="0 0 0" />
+    <connect name="kinematic_link5" active="true" body1="v_link1" body2="l_link_up1" anchor="0.0 0 0" />
     <connect name="kinematic_link6" active="true" body1="v_link2" body2="l_link_up2" anchor="0 0 0" />
     <connect name="kinematic_link7" active="true" body1="v_link3" body2="l_link_up3" anchor="0 0 0" />
     <connect name="kinematic_link8" active="true" body1="v_link4" body2="l_link_up4" anchor="0 0 0" />
 
-    <connect name="kinematic_link9" active="true" body1="ring1" body2="l_link_up1" anchor="0 0 0" />
+<!--    <connect name="kinematic_link9" active="true" body1="ring1" body2="l_link_up1" anchor="0 0 0" />-->
 <!--    <connect name="kinematic_link10" active="true" body1="ring1" body2="l_link_up2" anchor="0 0 0" />-->
-    <connect name="kinematic_link11" active="true" body1="ring1" body2="l_link_up3" anchor="0 0 0" />
-    <connect name="kinematic_link12" active="true" body1="ring1" body2="l_link_up4" anchor="0 0 0" />
+<!--    <connect name="kinematic_link11" active="true" body1="ring1" body2="l_link_up3" anchor="0 0 0" />-->
+<!--    <connect name="kinematic_link12" active="true" body1="ring1" body2="l_link_up4" anchor="0 0 0" />-->
 
 
 <!--&lt;!&ndash;    <connect name="kinematic_link6" active="true" body1="ring1" body2="l_link_down4" anchor="0 0 0" />&ndash;&gt;-->

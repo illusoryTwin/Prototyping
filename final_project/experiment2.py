@@ -8,10 +8,10 @@ import csv
 # Load the model and data
 model = mujoco.MjModel.from_xml_path('model.xml')
 data = mujoco.MjData(model)
-end_time = 10
+end_time = 30
 
 # Generate angle combinations
-angle_combinations = product(range(0, 16, 4), repeat=8)
+angle_combinations = product(range(0, 40, 5), repeat=4)
 time_list = []
 q_t = []
 dq_t = []
@@ -23,22 +23,35 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         step_start = time.time()
         for angle in angle_combinations:
             # Set joint angles using the combinations
-            data.qpos[0], data.qpos[3] = np.deg2rad(angle[0]), np.deg2rad(angle[1])
-            data.qpos[6], data.qpos[9] = np.deg2rad(angle[2]), np.deg2rad(angle[3])
-            data.qpos[2], data.qpos[5] = np.deg2rad(angle[4]), np.deg2rad(angle[5])
-            data.qpos[8], data.qpos[11] = np.deg2rad(angle[6]), np.deg2rad(angle[7])
-            if data.contact:
+            data.qvel[:] = [0] * 13
+            data.qacc[:] = [0] * 13
+            data.qpos[2], data.qpos[5] = np.deg2rad(angle[0]), np.deg2rad(angle[1])
+            data.qpos[9], data.qpos[12] = np.deg2rad(angle[2]), np.deg2rad(angle[3])
+            # data.qpos[0], data.qpos[3] = np.deg2rad(angle[0]), np.deg2rad(angle[1])
+            # data.qpos[7], data.qpos[10] = np.deg2rad(angle[2]), np.deg2rad(angle[3])
+            data.qpos[6] = 0
+
+            # data.qpos[6], data.qpos[9] = np.deg2rad(angle[2]), np.deg2rad(angle[3])
+            # data.qpos[2], data.qpos[5] = np.deg2rad(angle[0]), np.deg2rad(angle[1])
+            # data.qpos[8], data.qpos[11] = np.deg2rad(angle[2]), np.deg2rad(angle[3])
+            mujoco.mj_inverse(model, data)
+            mujoco.mj_step(model, data)
+
+            # if data.contact:
+            if data.contact.geom.size != 0:
                 print("contact")
             else:
                 print("ok")
-            mujoco.mj_inverse(model, data)
-            tau = data.qfrc_inverse
+            # tau = data.qfrc_inverse
+            tau_ = data.qfrc_inverse
+            tau = tau_/1000
             torques.append(tau.copy().tolist())
 
             mujoco.mj_step(model, data)
             viewer.sync()
             q_t.append(data.qpos.copy().tolist())
-            dq_t.append(data.qvel.copy().tolist())
+            q_vel_ = data.qvel.copy()/18
+            dq_t.append(q_vel_.tolist())
             time_list.append(time.time() - start)
 
             time_until_next_step = model.opt.timestep - (time.time() - step_start)
@@ -48,7 +61,7 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
 print("Simulation completed. Saving data to CSV...")
 
 # Write data to CSV
-with open('simulation_data.csv', mode='w', newline='') as file:
+with open('simulation_data3.csv', mode='w', newline='') as file:
     writer = csv.writer(file)
     # Write headers
     writer.writerow(['time', 'qpos', 'qvel', 'torque'])
@@ -57,4 +70,4 @@ with open('simulation_data.csv', mode='w', newline='') as file:
     for t, qpos, qvel, torque in zip(time_list, q_t, dq_t, torques):
         writer.writerow([t, qpos, qvel, torque])
 
-print("Data saved to simulation_data.csv")
+print("Data saved to simulation_data3.csv")

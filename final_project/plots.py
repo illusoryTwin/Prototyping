@@ -9,7 +9,7 @@ qvel_list = []
 torques_list = []
 
 # Read the CSV file
-with open('simulation_data.csv', mode='r') as file:
+with open('simulation_data3.csv', mode='r') as file:
     reader = csv.DictReader(file)
     for row in reader:
         time_list.append(float(row['time']))

@@ -8,7 +8,7 @@ import csv
 # Load the model and data
 model = mujoco.MjModel.from_xml_path('model.xml')
 data = mujoco.MjData(model)
-end_time = 10
+end_time = 130
 
 # Generate angle combinations
 angle_combinations = product(range(0, 5, 1), repeat=8)
@@ -21,7 +21,22 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
     start = time.time()
     while viewer.is_running() and time.time() - start < end_time:
         step_start = time.time()
-        data.qpos[:] = [0]*13
+        data.qpos[6] = np.deg2rad(0)
+        data.qpos[0], data.qpos[3] = np.deg2rad(20), np.deg2rad(20)
+        data.qpos[7], data.qpos[10] = np.deg2rad(20), np.deg2rad(20)
+        data.qpos[2], data.qpos[5] = np.deg2rad(20), np.deg2rad(20)
+        data.qpos[9], data.qpos[12] = np.deg2rad(20), np.deg2rad(20)
+        # # data.qpos[6] = np.deg2rad(30)
+        # data.qpos[0], data.qpos[3] = np.deg2rad(15), np.deg2rad(15)
+        # data.qpos[6], data.qpos[9] = np.deg2rad(15), np.deg2rad(15)
+        # data.qpos[2], data.qpos[5] = np.deg2rad(30), np.deg2rad(30)
+        # data.qpos[8], data.qpos[11] = np.deg2rad(30), np.deg2rad(30)
+        # data.qpos[6] = np.deg2rad(0)
+        # data.qpos[0], data.qpos[3] = np.deg2rad(10), np.deg2rad(10)
+        # data.qpos[7], data.qpos[10] = np.deg2rad(10), np.deg2rad(10)
+        # data.qpos[2], data.qpos[5] = np.deg2rad(10), np.deg2rad(10)
+        # data.qpos[9], data.qpos[12] = np.deg2rad(10), np.deg2rad(10)
+
         mujoco.mj_step(model, data)
 
         viewer.sync()

@@ -12,24 +12,27 @@ import seaborn as sns
 model = mujoco.MjModel.from_xml_path('model.xml')
 data = mujoco.MjData(model)
 
-angle_combinations = product(range(0, 360, 30), repeat=4)
+angle_combinations = product(range(0, 360, 10), repeat=4)
 
 measurements_list = []
 
 # Run the simulation and collect data
 with mujoco.viewer.launch_passive(model, data) as viewer:
     start = time.time()
-    while viewer.is_running() and time.time() - start < 30:
+    while viewer.is_running() and time.time() - start < 10:
         step_start = time.time()
         for q1, q2, q3, q4 in angle_combinations:
             data.qpos = np.deg2rad([q1, q2, q3, q4])
+            data.qvel[:] = [0]*4
+            data.qacc[:] = [0]*4
             mujoco.mj_step(model, data)
-            mujoco.mj_inverse(model, data)
-            if data.contact:
+            if data.contact.geom.size != 0:
                 print('contact')
-                continue
-            tau = data.qfrc_inverse
-            measurements_list.append([q1, q2, q3, q4, tau[0], tau[1], tau[2], tau[3]])
+                # continue
+            else:
+                mujoco.mj_inverse(model, data)
+                tau = data.qfrc_inverse.copy()
+                measurements_list.append([q1, q2, q3, q4, tau[0], tau[1], tau[2], tau[3]])
 
             viewer.sync()
 
